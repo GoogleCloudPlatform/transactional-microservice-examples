@@ -29,7 +29,7 @@ This is an example application that explains how you can execute transactional w
 
 ### Choreography-based saga
 
-In this pattern, microservices work as an autonomous distributed system. Each service publishes an event to notify the status change of entities owned by that service. The notification event triggers an action of other services. In this way, multiple services work together to complete the transactional process. The communication between microservices is completely asynchronous. When a service publishes an event, it doesn't know when and which service will receive it.
+In this pattern, microservices work as an autonomous distributed system. Each service publishes an event to notify the status change of entities owned by that service. The notification event triggers actions of other services. In this way, multiple services work together to complete the transactional process. The communication between microservices is completely asynchronous. When a service publishes an event, it doesn't know when and which service will receive it.
 
 In this example, you use [Cloud Run][1] as a runtime of microservices, [Pub/Sub][3] as a messaging service to deliver events between microservices, and [Datastore][2] as a backend database of each service. In addition, you use Datastore to store events before publishing them. The stored events are published periodically using [Cloud Scheduler][4]. The reason why microservices store events instead of publish them immediately is explained in the later section.
 
