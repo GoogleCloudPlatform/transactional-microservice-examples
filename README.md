@@ -29,7 +29,7 @@ This is an example application that explains how you can execute transactional w
 
 ### Choreography-based saga
 
-In this pattern, microservices work as an autonomous distributed system. Each service publishes an event to notify the status change of entities owned by it. The notification event triggers an action of another service. In this way, multiple services work together to complete the transactional process. The communication between microservices is completely asynchronous. When a service publishes an event, it doesn't know when and which service will receive it.
+In this pattern, microservices work as an autonomous distributed system. Each service publishes an event to notify the status change of entities owned by that service. The notification event triggers an action of other services. In this way, multiple services work together to complete the transactional process. The communication between microservices is completely asynchronous. When a service publishes an event, it doesn't know when and which service will receive it.
 
 In this example, you use [Cloud Run][1] as a runtime of microservices, [Pub/Sub][3] as a messaging service to deliver events between microservices, and [Datastore][2] as a backend database of each service. In addition, you use Datastore to store events before publishing them. The stored events are published periodically using [Cloud Scheduler][4]. The reason why microservices store events instead of publish them immediately is explained in the later section.
 
@@ -367,7 +367,7 @@ Before using a web client, you test the server-side components using the `curl` 
 
 ### "Choreography-based saga" architecture
 
-Set environmental variables to point URLs of API endpoints of microservices.
+Set environment variables to point URLs of API endpoints of microservices.
 
 ```shell
 SERVICE_NAME="customer-service-async"
@@ -431,7 +431,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Set an environmental variable with the assigned `order_id`.
+Set an environment variable with the assigned `order_id`.
 
 ```shell
 ORDER_ID="7f51dcf1-877f-4e04-8aa9-d6d99cf50f67"
@@ -510,7 +510,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Set an environmental variable with the assigned `order_id`.
+Set an environment variable with the assigned `order_id`.
 
 ```shell
 ORDER_ID="9d749a13-b21d-4b19-a979-4e7f51f3598d"
@@ -564,7 +564,7 @@ You can see the contents of the backend database from [the Datastore's entity me
 
 ## "Synchronous orchestration" architecture
 
-Set environmental variables to point URLs of API endpoints of microservices.
+Set environment variables to point URLs of API endpoints of microservices.
 
 ```shell
 SERVICE_NAME="customer-service-sync"
