@@ -1,0 +1,5 @@
+indexes:
+- kind: Event
+  properties:
+  - name: published
+  - name: timestamp

@@ -1,0 +1,54 @@
+main:
+  params: [args]
+  steps:
+    - createOrder:
+        call: http.post
+        args:
+          url: ORDER-SERVICE-URL/api/v1/order/create
+          body:
+            "customer_id": ${args.customer_id}
+            "number": ${args.number}
+          auth:
+            type: OIDC
+        result: order
+    - reserveCredit:
+        call: http.post
+        args:
+          url: CUSTOMER-SERVICE-URL/api/v1/customer/reserve
+          body:
+            "customer_id": ${args.customer_id}
+            "number": ${args.number}
+          auth:
+            type: OIDC
+        result: orderCheck
+    - updateOrder:
+        switch:
+          - condition: ${orderCheck.body.accepted == true}
+            next: acceptOrder
+        next: rejectOrder
+    - acceptOrder:
+        call: http.post
+        args:
+          url: ORDER-SERVICE-URL/api/v1/order/update
+          body:
+            "customer_id": ${args.customer_id}
+            "order_id": ${order.body.order_id}
+            "status": "accepted"
+          auth:
+            type: OIDC
+        result: orderResult
+        next: finish
+    - rejectOrder:
+        call: http.post
+        args:
+          url: ORDER-SERVICE-URL/api/v1/order/update
+          body:
+            "customer_id": ${args.customer_id}
+            "order_id": ${order.body.order_id}
+            "status": "rejected"
+          auth:
+            type: OIDC
+        result: orderResult
+        next: finish
+    - finish:
+          return: ${orderResult.body}

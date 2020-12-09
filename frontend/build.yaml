@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          include:
+            - lib/entity/*.dart
+      json_serializable:
+        generate_for:
+          include:
+            - lib/entity/*.dart
+        options:
+          any_map: true
+          explicit_to_json: true
