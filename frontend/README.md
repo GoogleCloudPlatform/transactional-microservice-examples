@@ -109,18 +109,15 @@ firebase init hosting
 ```shell
 cp -r ../build/web/* public/
 sed -i "s/__CLIENT_ID__/$CLIENT_ID/" public/index.html
-cp ../firebase/firebase.json ./
-firebase deploy
 ```
 
 ### Deploy the frontend app with Firebase Hosting
 
 ```shell
+cp ../firebase/firebase.json ./
 firebase deploy
 ```
 
-Take note of the `Hosting URL` in the output.
-
 ## Use the web frontend application.
 
-Open the public url on a browser.
+Open the `Hosting URL` on the web browser.
