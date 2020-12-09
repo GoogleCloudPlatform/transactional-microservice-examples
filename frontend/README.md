@@ -2,9 +2,11 @@
 
 Disclaimer: This is not an official Google product.
 
+**This is under development. You may get unexpected errors.**
+
 ## Introduction
 
-This project works on top of the [example application](https://github.com/enakai00/gcp-saga-pattern-example).
+This project works on top of the [example application](https://github.com/GoogleCloudPlatform/transactional-microservice-examples).
 
 You deploy a web application using [Firebase Hosting](https://firebase.google.com/docs/hosting)
 that interacts with backend microservices running on Cloud Run. Firebase hosting is natively
@@ -18,7 +20,7 @@ for details.
 ## Prerequisites
 
 1. Complete building the example application following the
-[instruction](https://github.com/enakai00/gcp-saga-pattern-example/blob/main/README.md).
+[instruction](https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/README.md).
 
 2. Open the Google Cloud Shell and set your project ID.
 
@@ -28,7 +30,7 @@ gcloud config set project $PROJECT_ID
 ```
 
 3. We assume that you have cloned the lab repository in your cloud shell
-directory `$HOME/gcp-saga-pattern-example`.
+directory `$HOME/transactional-microservice-examples`.
 
 ## Deploy the web frontend application
 
