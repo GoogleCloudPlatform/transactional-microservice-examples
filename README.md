@@ -363,6 +363,7 @@ gcloud beta workflows deploy order_workflow \
 ## Test the server-side components
 
 Before using a web client, you test the server-side components using the `curl` command.
+(A web client example will be added later.)
 
 ### "Choreography-based saga" architecture
 
