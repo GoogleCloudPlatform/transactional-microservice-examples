@@ -1,0 +1,4 @@
+Flask
+gunicorn
+google-cloud-datastore
+google-cloud-pubsub
