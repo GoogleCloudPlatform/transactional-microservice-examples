@@ -363,7 +363,6 @@ gcloud beta workflows deploy order_workflow \
 ## Test the server-side components
 
 Before using a web client, you test the server-side components using the `curl` command.
-(A web client example will be added later.)
 
 ### "Choreography-based saga" architecture
 
@@ -562,7 +561,7 @@ You can see the contents of the backend database from [the Datastore's entity me
 
 [12]: https://console.cloud.google.com/datastore/entities
 
-## "Synchronous orchestration" architecture
+### "Synchronous orchestration" architecture
 
 Set environment variables to point URLs of API endpoints of microservices.
 
@@ -652,3 +651,9 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```
 
 In this case, the final status is `rejected`.
+
+## Access from a web application
+
+Follow the [instraction](https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/README.md) to deploy a web application example.
+
+
