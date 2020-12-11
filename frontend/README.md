@@ -107,7 +107,7 @@ for details.
 ### Build the web frontend application
 
 ```bash
-cd $HOME/gcp-saga-pattern-example/frontend
+cd $HOME/transactional-microservice-examples/frontend
 gcloud builds submit . --config=cloudbuild.yaml
 ```
 
@@ -132,7 +132,7 @@ before accessing the URL from your browser.
 ### Initialize the Firebase project
 
 ```shell
-cd $HOME/gcp-saga-pattern-example/frontend
+cd $HOME/transactional-microservice-examples/frontend
 mkdir firebase_hosting
 cd firebase_hosting
 firebase init hosting
