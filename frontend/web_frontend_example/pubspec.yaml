@@ -1,0 +1,47 @@
+# Copyright 2020 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: web_frontend_example
+description: A demo frontend application for the saga design pattern.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_hooks: ^0.15.0
+  hooks_riverpod: ^0.12.1
+  freezed_annotation: ^0.12.0
+  json_serializable: ^3.5.0
+  dio: ^3.0.10
+  google_sign_in: ^4.5.6
+  flutter_signin_button: ^1.1.0
+
+dev_dependencies:
+  build_runner: ^1.10.6
+  freezed: ^0.12.3
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
