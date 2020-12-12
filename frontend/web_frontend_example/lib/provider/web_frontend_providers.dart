@@ -164,8 +164,6 @@ class WebFrontendViewController {
     try {
       final account = await _googleSignIn.signIn();
       read(googleAuthenticationProvider).state = await account.authentication;
-      print('Successfully retrieved a token: ' +
-          read(googleAuthenticationProvider).state.idToken);
     } catch (error) {
       print(error);
     }
