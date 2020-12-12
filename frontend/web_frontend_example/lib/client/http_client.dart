@@ -22,12 +22,9 @@ import 'package:dio/dio.dart';
 Future<String> postData(
     String path, String token, Map<String, dynamic> parameter) async {
   final dio = Dio();
-  print('Sending request: $path');
-  print('Parameter: $parameter');
   final host =
       html.window.location.protocol + '//' + html.window.location.hostname;
   if (token != null && token.isNotEmpty) {
-    print('With token: $token');
     dio.options.headers['Authorization'] = 'Bearer $token';
   }
   Response response;
