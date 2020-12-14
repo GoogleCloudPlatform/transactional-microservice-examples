@@ -607,7 +607,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```json
 {
   "customer_id": "customer02",
-  "number": 1,
+  "number": 10,
   "order_id": "fb6d5087-dd99-4d5a-84c2-0e381016b9d3",
   "status": "accepted"
 }
@@ -644,7 +644,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```json
 {
   "customer_id": "customer02",
-  "number": 100,
+  "number": 95,
   "order_id": "6b9c7e25-8999-437f-a8b2-dbedf5b8240f",
   "status": "rejected"
 }
