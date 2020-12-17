@@ -48,7 +48,7 @@ This example application implements a simple usecase described at the web site [
 1. The customer submits an order request with specifying a customer ID and a number of items.
 1. The Order service assigns an order ID, and stores the order information in the database. The status of the order is marked as "pending".
 1. The Customer service increases the customer's credit usage, that is stored in the database, according to the number of ordered items.
-1. If the total credit usage is lower than (or equals to) the predefined limit, the order is accepted and the Order service changes the status of the order in the database as "accepted".
+1. If the total credit usage is lower than (or equal to) the predefined limit, the order is accepted and the Order service changes the status of the order in the database as "accepted".
 1. Otherwise, the Order service changes the status of the order as "rejected". In this case, the customer's credit usage is not increased.
 
 ## Architecture
@@ -65,7 +65,7 @@ As described in Introduction, two services communicate with each other through e
 
 1. The Customer service receives the event through a push notification. It increases the customer's credit usage, that is stored in the database, according to the number of ordered items.
 
-1. If the total credit usage is lower than (or equals to) the predefined limit, the Customer service publishes an event containing the information that the credit increase has succeeded. Otherwise, it publishes an event containing the information that the credit increase has failed. In that case, the credit usage is not increased.
+1. If the total credit usage is lower than (or equal to) the predefined limit, the Customer service publishes an event containing the information that the credit increase has succeeded. Otherwise, it publishes an event containing the information that the credit increase has failed. In that case, the credit usage is not increased.
 
 1. The Order service receives the event through a push notification. It changes the order status as "accepted" or "rejected" accordingly. The customer can track the status of the order using the order ID returned from the Order service.
 
@@ -95,7 +95,7 @@ In this architecture, the customer's order is processed as below:
 
 1. The workflow calls the Customer service's REST API with passing the customer ID and the number of items. Then the Customer increases the customer's credit usage, that is stored in the database, according to the number of ordered items.
 
-1. If the total credit usage is lower than (or equals to) the predefined limit, the Customer service returns data describing that the credit increase has succeeded. Otherwise, it returns data describing that the credit increase has failed. In that case, the credit usage is not increased.
+1. If the total credit usage is lower than (or equal to) the predefined limit, the Customer service returns data describing that the credit increase has succeeded. Otherwise, it returns data describing that the credit increase has failed. In that case, the credit usage is not increased.
 
 1. The workflow calls the Order service's REST API to change the order status as "accepted" or "rejected" accordingly. Finally, it returns the order information in the final status to the Order Processing service. Then the Order Processing service return that information to the customer.
 
