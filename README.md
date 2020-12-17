@@ -57,7 +57,7 @@ This example application implements a simple usecase described at the web site [
 
 <img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/docs/img/choreography-architecture.png" width="640px">
 
-As described in Introduction, two services communicate each other through events. In this architecture, the customer's order is processed as below:
+As described in Introduction, two services communicate with each other through events. In this architecture, the customer's order is processed as below:
 
 1. The customer submits an order request with specifying a customer ID and a number of items. The request is sent to the Order service through the REST API.
 
