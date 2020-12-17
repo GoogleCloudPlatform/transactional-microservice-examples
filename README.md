@@ -654,6 +654,6 @@ In this case, the final status is `rejected`.
 
 ## Access from a web application
 
-Follow the [instraction](https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/README.md) to deploy a web application example.
+Follow the [instruction](https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/README.md) to deploy a web application example.
 
 
