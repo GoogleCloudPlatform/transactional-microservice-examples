@@ -67,7 +67,7 @@ As described in Introduction, two services communicate with each other through e
 
 1. If the total credit usage is lower than (or equals to) the predefined limit, the Customer service publishes an event containing the information that the credit increase has succeeded. Otherwise, it publishes an event containing the information that the credit increase has failed. In that case, the credit usage is not increased.
 
-1. The Order service receives the event through a push notification. It changes the order status as "accepted" or "rejected" accordingly. The customer can track the status of the order using the order ID retuned from the Order service.
+1. The Order service receives the event through a push notification. It changes the order status as "accepted" or "rejected" accordingly. The customer can track the status of the order using the order ID returned from the Order service.
 
 ### Notes on the event publishing process
 
