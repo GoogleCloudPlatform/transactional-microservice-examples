@@ -613,7 +613,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Because the transaction process is conducted in a synchronous way, the client get the final result. In this case, the final status is `accepted`.
+Because the transaction process is conducted in a synchronous way, the client gets the final result. In this case, the final status is `accepted`.
 
 Get the customer information.
 
