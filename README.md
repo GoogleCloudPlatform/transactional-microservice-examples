@@ -243,7 +243,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --role=roles/iam.serviceAccountTokenCreator
 ```
 
-You create a push-subscription that deliver messages in the `order-service-event` topic to the Customer service. You let Pub/Sub use the service account, that you created before, to invoke the Customer service with `run.invoker` role.
+You create a push-subscription that delivers messages in the `order-service-event` topic to the Customer service. You let Pub/Sub use the service account, that you created before, to invoke the Customer service with `run.invoker` role.
 
 ```shell
 SERVICE_NAME="customer-service-async"
@@ -262,7 +262,7 @@ gcloud pubsub subscriptions create push-order-to-customer \
   --push-auth-service-account=$SERVICE_ACCOUNT_EMAIL
 ```
 
-You create a push-subscription that deliver messages in the `customer-service-event` topic to the Order service. You let Pub/Sub use the service account, that you created before, to invoke the Order service with `run.invoker` role.
+You create a push-subscription that delivers messages in the `customer-service-event` topic to the Order service. You let Pub/Sub use the service account, that you created before, to invoke the Order service with `run.invoker` role.
 
 ```shell
 SERVICE_NAME="order-service-async"
