@@ -203,7 +203,7 @@ gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
 
 ### Define schedule to call the Event Publisher service
 
-In this example, you define a schedule that call the Event Publisher service in every minute. You let Scheduler use the service account, that you created in the previous step, to call the Event Publisher service with `run.invoker` role.
+In this example, you define a schedule that calls the Event Publisher service in every minute. You let Scheduler use the service account, that you created in the previous step, to call the Event Publisher service with `run.invoker` role.
 
 ```shell
 SERVICE_NAME="event-publisher"
