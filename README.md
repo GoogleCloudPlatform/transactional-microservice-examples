@@ -183,7 +183,7 @@ gcloud run deploy event-publisher \
 Create an index for Datastore.
 
 ```shell
-gcloud datastore indexes create index.yaml
+gcloud datastore indexes create index.yaml --quiet
 ```
 
 Open [the Datastore's index menu][13] on Cloud Console and wait a few minutes until the index becomes ready.
