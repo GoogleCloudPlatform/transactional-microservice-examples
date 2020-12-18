@@ -339,7 +339,7 @@ gcloud run services add-iam-policy-binding $SERVICE_NAME \
     --platform=managed --region=us-central1
 ```
 
-You deploy a wrokflow to process a customer's order.
+You deploy a workflow to process a customer's order.
 
 ```shell
 SERVICE_NAME="customer-service-sync"
