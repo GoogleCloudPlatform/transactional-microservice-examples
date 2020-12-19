@@ -125,8 +125,8 @@ Login with your google account that is the owner of your project to refresh the 
 firebase login --reauth --no-localhost
 ```
 
-You will get a login link, **but the URL string displayed on the Cloud Shell contains line breaks
-at the right end of the terminal.** Copy the URL string to your text editor and delete line breaks
+Note: **The URL string displayed on the Cloud Shell may contain line breaks at the right end of the terminal.**
+In that case, copy the URL string to your text editor and delete line breaks
 before accessing the URL from your browser.
 
 ### Initialize the Firebase project
