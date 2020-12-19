@@ -37,7 +37,7 @@ for details.
 
 1. Check [External] and click [CREATE] button.
 
-   1. OAuth concent screen.
+   1. OAuth consent screen.
 
       1. Input App name (e.g. `Saga Frontend Demo`).
       1. Select User support email.
