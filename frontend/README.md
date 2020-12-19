@@ -98,7 +98,7 @@ for details.
    gcloud run deploy order-processor-service \
      --image gcr.io/$PROJECT_ID/order-processor-service \
      --platform=managed --region=us-central1 \
-    --no-allow-unauthenticated \
+     --no-allow-unauthenticated \
      --set-env-vars "PROJECT_ID=$PROJECT_ID"
    ```
 
