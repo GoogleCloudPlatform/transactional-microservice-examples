@@ -32,7 +32,7 @@ for details.
 
 ## Create OAuth 2.0 Client
 
-1. Open [OAuth consent screen](https://console.developers.google.com/apis/apis/credentials/consent)
+1. Open [OAuth consent screen](https://console.developers.google.com/apis/credentials/consent)
    from the APIs & Services menu on Cloud Console.
 
 1. Check [External] and click [CREATE] button.
