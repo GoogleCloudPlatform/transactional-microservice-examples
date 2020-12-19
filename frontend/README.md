@@ -196,6 +196,5 @@ and click [Send!] again. Eventually, the status becomes "accepted".
 Click "Order" on the left menu. Choose "Sync" with the slide switch, and select
 "process" (not "create") from the pull down menu. Set "customer_id" and "number" as in
 the screenshot and click [Send!]. The response shows that the order status is "accepted".
-of the "order_id".
 
 <img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot04.png" width="720px">
