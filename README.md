@@ -133,13 +133,14 @@ PROJECT_ID=[your project ID]
 gcloud config set project $PROJECT_ID
 ```
 
-4. Enable the Cloud Run API, Workflows API, Cloud Build API, Cloud Scheduler API, and Cloud Identity-Aware Proxy API.
+4. Enable the Cloud Run API, Workflows API, Cloud Build API and Cloud Scheduler API.
 
 ```shell
-gcloud services enable run.googleapis.com
-gcloud services enable workflows.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
-gcloud services enable cloudscheduler.googleapis.com
+gcloud services enable \
+  run.googleapis.com \
+  workflows.googleapis.com \
+  cloudbuild.googleapis.com \
+  cloudscheduler.googleapis.com
 ```
 
 5. Clone the lab repository in your cloud shell.
