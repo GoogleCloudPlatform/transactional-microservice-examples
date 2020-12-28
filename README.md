@@ -214,7 +214,7 @@ gcloud run services add-iam-policy-binding $SERVICE_NAME \
     --platform=managed --region=us-central1
 
 SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:event-publisher")
+    --format="table[no-heading](URL)" --filter="SERVICE:$SERVICE_NAME")
 SERVICE_URL="${SERVICE_URL}/api/v1/event/publish"
 gcloud scheduler jobs create http event-publisher-scheduler \
        --schedule='* * * * *' \
