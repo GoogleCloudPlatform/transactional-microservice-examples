@@ -49,7 +49,7 @@ def publish_event():
                 result['published'] = True
                 ds_client.put(result)
             except:
-                print('Failed to publish an envent {}: {}'.format(event_id, future.exception()),
+                print('Failed to publish an event {}: {}'.format(event_id, future.exception()),
                         file=sys.stderr)
             finally:
                 futures.pop(event_id)
