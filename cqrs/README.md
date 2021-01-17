@@ -361,13 +361,13 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   ]
 }
 
-bq query "select product_name, count(*) as total_number, sum(total_price) as revenue \
+bq query "select product_name, sum(number) as total_number, sum(total_price) as revenue \
   from cqrs_example.order_information group by product_name"
   
 +----------------+--------------+---------+
 |  product_name  | total_number | revenue |
 +----------------+--------------+---------+
-| Gaming Display |            2 |    6400 |
+| Gaming Display |            8 |    6400 |
 +----------------+--------------+---------+
 ```
 
