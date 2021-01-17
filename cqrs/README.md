@@ -153,7 +153,7 @@ gcloud scheduler jobs create http event-publisher-scheduler \
        --http-method=GET \
        --uri=${SERVICE_URL}/api/v1/event/publish \
        --oidc-service-account-email=$SERVICE_ACCOUNT_EMAIL \
-       --oidc-token-audience=$SERVICE_URL
+       --oidc-token-audience=${SERVICE_URL}/api/v1/event/publish
 ```
 
 ### Create Pub/Sub topics
