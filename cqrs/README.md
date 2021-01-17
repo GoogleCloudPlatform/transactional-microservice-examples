@@ -330,5 +330,27 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
     }
   ]
 }
+
+
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id":"customer01", "order_date": "2020"}' \
+  -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
+
+{
+  "order_date": "2020-12",
+  "orders": [
+    {
+      "customer_id": "customer01",
+      "number": 3,
+      "order_date": "2020-12-31",
+      "order_id": "cd790c68-2b07-4fbe-b033-66e6e552b79f",
+      "product_id": "product00001",
+      "product_name": "Gaming Display",
+      "total_price": 2400,
+      "unit_price": 800
+    }
+  ]
+}
 ```
 
