@@ -117,6 +117,10 @@ gcloud run deploy event-publisher \
 Create an index for Datastore.
 
 ```shell
+cd $HOME/transactional-microservice-examples/cqrs/services/orderinfo
+gcloud datastore indexes create index.yaml --quiet
+
+cd $HOME/transactional-microservice-examples/cqrs/services/event-publisher
 gcloud datastore indexes create index.yaml --quiet
 ```
 
@@ -267,6 +271,11 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   "message": "The order does not exist."
 }
 
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d "{\"customer_id\":\"customer01\", \"order_id\": \"$ORDER_ID\"}" \
+  -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/get | jq .
+
 {
   "customer_id": "customer01",
   "number": 3,
@@ -278,5 +287,48 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   "unit_price": 800
 }
 
+
+====
+
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id":"customer01", "product_id": "product00001", "number":5}' \
+  -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
+
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id":"customer01", "product_id": "product00001", "number":3, "order_date": "2020-12-31"}' \
+  -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
+
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id":"customer01", "order_date": "2021-01"}' \
+  -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
+
+{
+  "order_date": "2021-01",
+  "orders": [
+    {
+      "customer_id": "customer01",
+      "number": 3,
+      "order_date": "2021-01-17",
+      "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+      "product_id": "product00001",
+      "product_name": "Gaming Display",
+      "total_price": 2400,
+      "unit_price": 800
+    },
+    {
+      "customer_id": "customer01",
+      "number": 5,
+      "order_date": "2021-01-17",
+      "order_id": "c3abe0eb-481c-4b31-8d34-d344b6e6b9ce",
+      "product_id": "product00001",
+      "product_name": "Gaming Display",
+      "total_price": 4000,
+      "unit_price": 800
+    }
+  ]
+}
 ```
 
