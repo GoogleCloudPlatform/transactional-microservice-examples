@@ -1,4 +1,4 @@
-# Lab: Using GCP services to implement the CQRS pattaern in microservices architecture
+# Lab: Using GCP services to implement the CQRS pattern in microservices architecture
 
 Disclaimer: This is not an official Google product.
 
