@@ -14,24 +14,25 @@
 
 
 import base64
+import copy
 import datetime
 import json
 import os
 import urllib
-import uuid
-
-from flask import Flask, request
 
 import google.auth.transport.requests
 import google.oauth2.id_token
+from google.cloud import datastore, bigquery
 
-from google.cloud import datastore
+from flask import Flask, request
 
 
 PRODUCT_SERVICE_URL = os.getenv('PRODUCT_SERVICE_URL')
 
+
 app = Flask(__name__)
 ds_client = datastore.Client()
+bq_client = bigquery.Client()
 
 
 def error500():
@@ -44,6 +45,42 @@ def error500():
 @app.route('/')
 def index():
     return 'Order information service for CQRS pattern. '
+
+
+@app.route('/api/v1/orderinfo/list', methods=['POST'])
+@app.route('/orderinfo-service-cqrs/api/v1/orderinfo/list', methods=['POST'])
+def order_list():
+    json_data = request.get_json()
+    customer_id, order_date = None, None
+    for key in json_data.keys():
+        if key == 'customer_id':
+            customer_id = json_data[key]
+        elif key == 'order_date':
+            order_date = json_data[key]
+        else:
+            invalid_fields.append(key)
+    if customer_id is None or order_date is None:
+        return error500()
+
+    query = ds_client.query(kind='OrderInformationCQRS')
+    query.add_filter('customer_id', '=', customer_id)
+    query.add_filter('order_date', '>=', order_date)
+    query.add_filter('order_date', '<', order_date + u'\ufffd')
+    orders = []
+    for result in query.fetch():
+        orders.append({
+            'order_id': result['order_id'],
+            'customer_id': result['customer_id'],
+            'product_id': result['product_id'],
+            'product_name': result['product_name'],
+            'number': result['number'],
+            'unit_price': result['unit_price'],
+            'total_price': result['total_price'],
+            'order_date': result['order_date'],
+        })
+    resp = {"order_date": order_date, "orders": orders}
+
+    return resp, 200
 
 
 @app.route('/api/v1/orderinfo/get', methods=['POST'])
@@ -121,13 +158,13 @@ def order_pubsub():
 
     # get product_name and unit_price from product service.
     url = PRODUCT_SERVICE_URL + '/api/v1/product/get'
-    credentials, project = google.auth.default()
+    credentials, _ = google.auth.default()
     auth_req = google.auth.transport.requests.Request()
     id_token = google.oauth2.id_token.fetch_id_token(auth_req, url)
     data = {'product_id': product_id}
     headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer {}'.format(id_token)
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(id_token)
     }
     req = urllib.request.Request(url, json.dumps(data).encode(), headers)
     result = None
@@ -141,15 +178,24 @@ def order_pubsub():
     unit_price = result['unit_price']
     
     order_info = {
-            'customer_id': customer_id,
-            'order_id': order_id,
-            'product_id': product_id,
-            'number': number,
-            'product_name': product_name,
-            'unit_price': unit_price,
-            'total_price': unit_price * number,
-            'order_date': order_date
+        'customer_id': customer_id,
+        'order_id': order_id,
+        'product_id': product_id,
+        'number': number,
+        'product_name': product_name,
+        'unit_price': unit_price,
+        'total_price': unit_price * number,
+        'order_date': order_date
     }
+
+    # Insert into bq table
+    table_ref = bq_client.dataset('cqrs_example').table('order_information')
+    table = bq_client.get_table(table_ref)
+    order_info_bq = copy.deepcopy(order_info)
+    order_info_bq['order_date'] = datetime.datetime.strptime(
+        order_info_bq['order_date'], '%Y-%m-%d').date()
+    rows = [order_info_bq]
+    bq_client.insert_rows(table, rows)
     
     with ds_client.transaction():
         incomplete_key = ds_client.key('OrderInformationCQRS')

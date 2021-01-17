@@ -5,3 +5,5 @@ README.md
 *.pyd
 __pycache__
 .pytest_cache
+index.yaml
+table_schema.json
