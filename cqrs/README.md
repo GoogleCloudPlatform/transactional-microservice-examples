@@ -21,6 +21,18 @@ Disclaimer: This is not an official Google product.
 
 ## Introduction
 
+In the microservices architecture, each service maintains its own database instead of sharing a central database. It's necessary to avoid a tight coupling of microservices. However, it sometimes makes difficult to join data across multiple microservices. You may use a data aggregation service that collects and joins data from multiple services based on a query request from a client. The Command and Query Responsibility Segregation (CQRS) pattern is another way to deal with the data aggregation problem. You deploy a query service that is responsible for maintaining a readonly database containing the denormalized (pre-joined) date.
+
+![architecture](docs/img/architecture.png)
+
+1. A customer requests an order specifying the product ID and number of products.
+2. The Order service assigns an unique order ID and publishes an event.
+3. The Order information service receives the event, retrieves product information from the Product service, and stores the aggregated information.
+4. The Order information service stores the same information in BQ with streaming insert.
+5. The customer gets the order information from the Order information service by Order ID, or order month (such as this month, last month, etc.)
+6. A shop owner sees statistics of orders through a dashboard. (Such as top 3 selling products.)
+
+
 ## Build the example application
 
 ### Prerequisites
