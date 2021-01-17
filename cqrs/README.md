@@ -189,7 +189,7 @@ gcloud run services add-iam-policy-binding $SERVICE_NAME \
 
 gcloud pubsub subscriptions create push-order-to-orderinfo \
   --topic order-service-cqrs-event \
-  --push-endpoint=$SERVICE_URL/api/v1/orderinfo/pubsub \
+  --push-endpoint=${SERVICE_URL}/api/v1/orderinfo/pubsub \
   --push-auth-service-account=$SERVICE_ACCOUNT_EMAIL
 ```
 
