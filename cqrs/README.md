@@ -197,8 +197,6 @@ gcloud pubsub subscriptions create push-order-to-orderinfo \
 
 Before using a web client, you test the server-side components using the `curl` command.
 
-### "Choreography-based saga" architecture
-
 Set environment variables to point URLs of API endpoints of microservices.
 
 ```shell
@@ -238,16 +236,47 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -d '{"product_id":"product00001"}' \
   -s $PRODUCT_SERVICE_URL/api/v1/product/get | jq .
 
+{
+  "product_id": "product00001",
+  "product_name": "Gaming Display",
+  "unit_price": 800
+}
+
+
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "product_id": "product00001", "number":10}' \
+  -d '{"customer_id":"customer01", "product_id": "product00001", "number":3}' \
   -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
 
-ORDER_ID="xxxx"
+{
+  "customer_id": "customer01",
+  "number": 3,
+  "order_date": "2021-01-17",
+  "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+  "product_id": "product00001"
+}
+
+ORDER_ID="551479ac-c665-43b7-aa35-f00b11c3219f"
 
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "order_id": "$ORDER_ID"}' \
+  -d "{\"customer_id\":\"customer01\", \"order_id\": \"$ORDER_ID\"}" \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/get | jq .
+  
+{
+  "message": "The order does not exist."
+}
+
+{
+  "customer_id": "customer01",
+  "number": 3,
+  "order_date": "2021-01-17",
+  "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+  "product_id": "product00001",
+  "product_name": "Gaming Display",
+  "total_price": 2400,
+  "unit_price": 800
+}
+
 ```
 
