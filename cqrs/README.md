@@ -105,7 +105,7 @@ gcloud run deploy orderinfo-service-cqrs \
   --no-allow-unauthenticated \
   --set-env-vars "PRODUCT_SERVICE_URL=$SERVICE_URL"
 
-cd $HOME/transactional-microservice-examples/services/event-publisher
+cd $HOME/transactional-microservice-examples/cqrs/services/event-publisher
 gcloud builds submit --tag gcr.io/$PROJECT_ID/event-publisher
 gcloud run deploy event-publisher \
   --image gcr.io/$PROJECT_ID/event-publisher \
