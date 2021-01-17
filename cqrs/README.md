@@ -103,7 +103,7 @@ gcloud run deploy orderinfo-service-cqrs \
   --image gcr.io/$PROJECT_ID/orderinfo-service-cqrs \
   --platform=managed --region=us-central1 \
   --no-allow-unauthenticated \
-  --set-env-vars "PRODUCT_SERVICE_URL=$SERVICE_URL"
+  --set-env-vars "PRODUCT_SERVICE_URL=$PRODUCT_SERVICE_URL"
 
 cd $HOME/transactional-microservice-examples/cqrs/services/event-publisher
 gcloud builds submit --tag gcr.io/$PROJECT_ID/event-publisher
@@ -112,6 +112,14 @@ gcloud run deploy event-publisher \
   --platform=managed --region=us-central1 \
   --no-allow-unauthenticated \
   --set-env-vars "PROJECT_ID=$PROJECT_ID"
+```
+
+Create a BQ table for order information.
+
+```shell
+cd $HOME/transactional-microservice-examples/cqrs/services/orderinfo
+bq mk --dataset $PROJECT_ID:cqrs_example
+bq mk --table cqrs_example.order_information table_schema.json
 ```
 
 Create an index for Datastore.
@@ -352,5 +360,14 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
     }
   ]
 }
+
+bq query "select product_name, count(*) as total_number, sum(total_price) as revenue \
+  from cqrs_example.order_information group by product_name"
+  
++----------------+--------------+---------+
+|  product_name  | total_number | revenue |
++----------------+--------------+---------+
+| Gaming Display |            2 |    6400 |
++----------------+--------------+---------+
 ```
 
