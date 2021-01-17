@@ -63,8 +63,8 @@ def order_get():
         return error500()
 
     query = ds_client.query(kind='OrderInformationCQRS')
-    query.add_filter('order_id', '=', order_id)
     query.add_filter('customer_id', '=', customer_id)
+    query.add_filter('order_id', '=', order_id)
     resp = None
     for result in query.fetch(): # This should return a single entity.
         resp = {
