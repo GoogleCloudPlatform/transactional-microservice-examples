@@ -244,7 +244,7 @@ ORDERINFO_SERVICE_URL=$(gcloud run services list --platform managed \
     --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 ```
 
-Create new product entries.
+Create a new product entry.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
@@ -257,9 +257,11 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 {
   "product_id": "product00001",
   "product_name": "Gaming Display",
-  "unit_price": 800
+  "unit_price": 500
 }
 ```
+
+Create one more product entry.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
@@ -276,7 +278,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-You can retrieve the product information from the Product service API.
+You can retrieve the product information from the Product service.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
@@ -289,7 +291,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 {
   "product_id": "product00001",
   "product_name": "Gaming Display",
-  "unit_price": 800
+  "unit_price": 500
 }
 ```
 
@@ -305,9 +307,9 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```json
 {
   "customer_id": "customer01",
-  "number": 2,
-  "order_date": "2021-01-17",
-  "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+  "number": 1,
+  "order_date": "2021-01-18",
+  "order_id": "efc25040-34be-445b-b789-b21d24326d84",
   "product_id": "product00001"
 }
 ```
@@ -315,7 +317,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 Set the assigned `order_id` in the environment variable.
 
 ```shell
-ORDER_ID="551479ac-c665-43b7-aa35-f00b11c3219f"
+ORDER_ID="efc25040-34be-445b-b789-b21d24326d84"
 ```
 
 Qeury the order information.
@@ -333,7 +335,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Because the communication between the Order service and the Order information service is asynchronous, the Order information service may not have the corresponsing information yet as in this result. In such a case, wait one minute, and retry.
+Because the communication between the Order service and the Order information service is asynchronous, the Order information service may not have the corresponsing information yet as in this result. In such a case, wait one minute, and retry. Then you receive the order information including the product information as below.
 
 ```
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
@@ -345,17 +347,15 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```json  
 {
   "customer_id": "customer01",
-  "number": 2,
-  "order_date": "2021-01-17",
-  "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+  "number": 1,
+  "order_date": "2021-01-18",
+  "order_id": "efc25040-34be-445b-b789-b21d24326d84",
   "product_id": "product00001",
   "product_name": "Gaming Display",
-  "total_price": 1600,
-  "unit_price": 800
+  "total_price": 500,
+  "unit_price": 500
 }
 ```
-
-Now you can receive the order information including the product information.
 
 Submit some more orders. In this example, you specify the order date explicitly. 
 
@@ -371,49 +371,49 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
 ```
 
-Query the order information for a specific month, Jan 2021.
+Retrieve the order information for a specific year, 2021.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "order_date": "2021-01"}' \
+  -d '{"customer_id":"customer01", "order_date": "2021"}' \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
 ```
 [Output]
 ```json
 {
-  "order_date": "2021-01",
+  "order_date": "2021",
   "orders": [
     {
       "customer_id": "customer01",
-      "number": 3,
-      "order_date": "2021-01-17",
-      "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
+      "number": 1,
+      "order_date": "2021-01-18",
+      "order_id": "efc25040-34be-445b-b789-b21d24326d84",
       "product_id": "product00001",
       "product_name": "Gaming Display",
-      "total_price": 2400,
-      "unit_price": 800
+      "total_price": 500,
+      "unit_price": 500
     },
     {
       "customer_id": "customer01",
-      "number": 5,
-      "order_date": "2021-01-17",
-      "order_id": "c3abe0eb-481c-4b31-8d34-d344b6e6b9ce",
-      "product_id": "product00001",
-      "product_name": "Gaming Display",
-      "total_price": 4000,
-      "unit_price": 800
+      "number": 1,
+      "order_date": "2021-02-14",
+      "order_id": "2b752e27-77cd-46e5-b496-6bda77dc5fb8",
+      "product_id": "product00002",
+      "product_name": "Web Camera",
+      "total_price": 100,
+      "unit_price": 100
     }
   ]
 }
 ```
 
-Query the order information for a specific year, 2020.
+Retrieve the order information for a specific month, Dec 2020.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "order_date": "2020"}' \
+  -d '{"customer_id":"customer01", "order_date": "2020-12"}' \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
 ```
 [Output]
@@ -423,13 +423,13 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   "orders": [
     {
       "customer_id": "customer01",
-      "number": 3,
+      "number": 1,
       "order_date": "2020-12-31",
-      "order_id": "cd790c68-2b07-4fbe-b033-66e6e552b79f",
-      "product_id": "product00001",
-      "product_name": "Gaming Display",
-      "total_price": 2400,
-      "unit_price": 800
+      "order_id": "23cfe022-3066-4216-933f-50082939bc8b",
+      "product_id": "product00002",
+      "product_name": "Web Camera",
+      "total_price": 100,
+      "unit_price": 100
     }
   ]
 }
@@ -446,7 +446,8 @@ bq query "select product_name, sum(number) as total_number, sum(total_price) as 
 +----------------+--------------+---------+
 |  product_name  | total_number | revenue |
 +----------------+--------------+---------+
-| Gaming Display |            8 |    6400 |
+| Gaming Display |            1 |     500 |
+| Web Camera     |            2 |     200 |
 +----------------+--------------+---------+
 ```
 
