@@ -159,7 +159,19 @@ cp ../firebase/firebase.json ./
 firebase deploy
 ```
 
-## Use the web frontend application.
+## Screens of the web frontend application
+
+The web frontend application consists of two screens.
+
+- Admin screen
+
+  This is for administrative operations. You can call raw APIs and confirm raw requests and responses.
+
+- Usecase screen
+
+  This imitates the order process in an e-commerce application using APIs.
+
+## Use the web frontend application - Admin screen
 
 Open the `Hosting URL` url on your browser. Click [Sign in with Google] and sign in
 with your Google account. You must use the account that is the GCP project owner.
@@ -198,3 +210,38 @@ Click "Order" on the left menu. Choose "Sync" with the slide switch, and select
 the screenshot and click [Send!]. The response shows that the order status is "accepted".
 
 <img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot04.png" width="720px">
+
+## Use the web frontend application - Usecase screen
+
+Open the `Hosting URL` url on your browser. Click [Sign in with Google] and sign in
+with your Google account. You must use the account that is the GCP project owner.
+Click [To Usecase] button to switch to "Usecase" screen.
+
+### Select the process
+
+Click [Async] or [Sync]. You can choose which process to initiate on this page.
+
+<img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot05.png" width="720px">
+
+### Create a customer
+
+Set "customer_id" and "limit" and click [Create]. Wait for a moment
+and you will see a green popup once it is completed successfully.
+
+<img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot06.png" width="720px">
+
+### Submit an order
+
+Set "Qty" and click [Submit order]. Wait for a moment
+and you will see a green popup once it is completed successfully.
+
+<img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot07.png" width="720px">
+
+### Confirm the result
+
+In "Sync" process, confirm the result. Click [Start over] to restart the process.
+In "Async" process, you will see "pending" as the order status.
+It means that the order is still under processing. Keep clicking [Refresh]
+until the order status becomes "accepted" or "rejected".
+
+<img src="https://github.com/GoogleCloudPlatform/transactional-microservice-examples/blob/main/frontend/docs/img/screenshot08.png" width="720px">

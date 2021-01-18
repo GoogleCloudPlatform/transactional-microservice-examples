@@ -25,6 +25,8 @@ import '../widget/text_fields.dart';
 import '../widget/web_frontend_bar.dart';
 
 class WebFrontend extends HookWidget {
+  static String id = '/admin';
+
   @override
   Widget build(BuildContext context) {
     final customerIdController = useTextEditingController();
