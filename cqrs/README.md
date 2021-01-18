@@ -21,17 +21,24 @@ Disclaimer: This is not an official Google product.
 
 ## Introduction
 
-In the microservices architecture, each service maintains its own database instead of sharing a central database. It's necessary to avoid a tight coupling of microservices. However, it sometimes makes difficult to join data across multiple microservices. You may use a data aggregation service that collects and joins data from multiple services based on a query request from a client. The Command and Query Responsibility Segregation (CQRS) pattern is another way to deal with the data aggregation problem. You deploy a query service that is responsible for maintaining a readonly database containing the denormalized (pre-joined) date.
+In the microservices architecture, each service maintains its own database instead of sharing a central database. It's necessary to avoid a tight coupling of microservices. However, it sometimes makes difficult to join data across multiple microservices. You may use a data aggregation service that collects and joins data from multiple services based on a query requests from clients. The Command and Query Responsibility Segregation (CQRS) pattern is another way to deal with the data aggregation problem. You deploy a query service that is responsible for maintaining a readonly database containing the pre-joined (denormalized) data. It receives events containing data update from other services and update its own database, if necessary, by joining them with other data from various data sources. When it receives a query request from a client, it sends back the pre-joined data from its database.
+
+The following diagram shows an example usecase of the CQRS pattern. It emulates a part of the order process of an online shopping system.
 
 ![architecture](docs/img/architecture.png)
 
 1. A customer requests an order specifying the product ID and number of products.
 2. The Order service assigns an unique order ID and publishes an event.
 3. The Order information service receives the event, retrieves product information from the Product service, and stores the aggregated information.
-4. The Order information service stores the same information in BQ with streaming insert.
-5. The customer gets the order information from the Order information service by Order ID, or order month (such as this month, last month, etc.)
-6. A shop owner sees statistics of orders through a dashboard. (Such as top 3 selling products.)
+4. The Order information service stores the same information in the data warehouse (BigQuery) with the streaming insert.
+5. The customer retrieves the order information from the Order information service with specifying an order ID. The customer can also retrieve information of multiple orders with specifying the range of order date such as in 2021, or in 2021/01.
+6. A shop owner can analyse the order data with the data warehouse.
 
+In this architecture, the Order service maintains the minimum amout of data, such as order id and product id, that is necessary to keep track of the order status. It doesn't record the product information maintained by the Product service. However, the customer may need borader information such as product names contained in the order. The Order information service maintains the database that contains the all information that a customer needs to know. In this example, it retrieves product information from the Product service and join it with the order information received from the Order service. The customer can query the information related to its orders against the Order information service.
+
+**Note**: In this example, the Order service desn't maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in [this example](../../main/README.md).
+
+The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyse the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
 
 ## Build the example application
 
