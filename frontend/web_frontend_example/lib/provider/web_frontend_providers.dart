@@ -14,14 +14,18 @@
   limitations under the License.
 */
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import '../entity/customer.dart';
 import '../entity/memu.dart';
 import '../entity/order.dart';
 import '../repository/customer_repository.dart';
 import '../repository/order_repository.dart';
+import '../utils.dart';
 
 final menusProvider = Provider.autoDispose<List<Menu>>((ref) {
   final _menus = <Menu>[];
@@ -30,11 +34,16 @@ final menusProvider = Provider.autoDispose<List<Menu>>((ref) {
   return _menus;
 });
 
+final isUsecaseProvider = StateProvider<bool>((ref) => false);
+
 final selectedMenuProvider =
     StateProvider.autoDispose<String>((ref) => 'Customer');
 
 final webFrontendViewControllerProvider =
     Provider.autoDispose((ref) => WebFrontendViewController(ref.read));
+
+final orderUsecaseViewControllerProvider =
+    Provider.autoDispose((ref) => OrderUsecaseViewController(ref.read));
 
 final methodsProvider = Provider.autoDispose((ref) {
   final selectedMenu = ref.watch(selectedMenuProvider).state;
@@ -56,6 +65,12 @@ final isAsyncProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 final isRequestingProvider = StateProvider.autoDispose<bool>((ref) => false);
 
+final currentQuantityProvider = StateProvider.autoDispose<int>((ref) => 0);
+
+final currentCustomerProvider = StateProvider<Customer>((ref) => null);
+
+final currentOrderProvider = StateProvider<Order>((ref) => null);
+
 final googleAuthenticationProvider =
     StateProvider<GoogleSignInAuthentication>((ref) => null);
 
@@ -63,6 +78,12 @@ final selectedMethodProvider = StateProvider.autoDispose<String>((ref) {
   final methods = ref.watch(methodsProvider);
   return methods[0];
 });
+
+final currentStepProvider =
+    StateProvider.autoDispose<String>((ref) => 'process');
+
+final currentAsyncProcessProvider =
+    StateProvider.autoDispose<bool>((ref) => false);
 
 final dtoProvider = StateProvider.autoDispose((ref) {
   final selectedMenu = ref.watch(selectedMenuProvider).state;
@@ -92,6 +113,14 @@ final dtoProvider = StateProvider.autoDispose((ref) {
 });
 
 final resultJsonProvider = StateProvider.autoDispose<String>((ref) => '');
+
+final loadingStepCustomerProvider =
+    StateProvider.autoDispose<bool>((ref) => false);
+
+final loadingStepCartProvider = StateProvider.autoDispose<bool>((ref) => false);
+
+final loadingStepConfirmRefreshProvider =
+    StateProvider.autoDispose<bool>((ref) => false);
 
 class WebFrontendViewController {
   WebFrontendViewController(this.read);
@@ -173,5 +202,155 @@ class WebFrontendViewController {
     await _googleSignIn.signOut();
     await _googleSignIn.disconnect();
     read(googleAuthenticationProvider).state = null;
+  }
+}
+
+class OrderUsecaseViewController {
+  OrderUsecaseViewController(this.read);
+
+  final Reader read;
+
+  void resetCurrentCustomer() {
+    read(currentCustomerProvider).state = null;
+  }
+
+  void resetCurrentOrder() {
+    read(currentOrderProvider).state = null;
+  }
+
+  void resetCurrentQuantity() {
+    read(currentQuantityProvider).state = 0;
+  }
+
+  void proceedStep(String step) {
+    read(currentStepProvider).state = step;
+  }
+
+  void updateQuantity(int quantity) {
+    read(currentQuantityProvider).state = quantity;
+  }
+
+  void setCurrentAsyncProcess(bool isAsync) {
+    read(currentAsyncProcessProvider).state = isAsync;
+  }
+
+  void setCurrentCustomer(Customer customer) {
+    read(currentCustomerProvider).state = customer;
+  }
+
+  void setCurrentOrder(Order order) {
+    read(currentOrderProvider).state = order;
+  }
+
+  bool isSignedIn() {
+    return read(googleAuthenticationProvider).state != null;
+  }
+
+  bool shouldShowProcess() {
+    return read(currentStepProvider).state != 'process';
+  }
+
+  void startLoadingOnStepCustomer() {
+    read(loadingStepCustomerProvider).state = true;
+  }
+
+  void stopLoadingOnStepCustomer() {
+    read(loadingStepCustomerProvider).state = false;
+  }
+
+  void startLoadingOnStepCart() {
+    read(loadingStepCartProvider).state = true;
+  }
+
+  void stopLoadingOnStepCart() {
+    read(loadingStepCartProvider).state = false;
+  }
+
+  void startLoadingOnStepConfirmRefresh() {
+    read(loadingStepConfirmRefreshProvider).state = true;
+  }
+
+  void stopLoadingOnStepConfirmRefresh() {
+    read(loadingStepConfirmRefreshProvider).state = false;
+  }
+
+  Future<Customer> createCustomer(CustomerDto customerDto) async {
+    final currentAsyncProcess = read(currentAsyncProcessProvider).state;
+    final repository = read(customerRepository);
+    final auth = read(googleAuthenticationProvider).state;
+    var token = '';
+    if (auth != null) {
+      token = auth.idToken;
+    }
+    final result =
+        await repository.limitCustomer(currentAsyncProcess, token, customerDto);
+    if (!isValidJson(result)) {
+      throw Error();
+    }
+    final customerJson = json.decode(result) as Map<String, dynamic>;
+    if (!_isValidCustomerJson(customerJson)) {
+      throw Error();
+    }
+    return Customer.fromJson(customerJson);
+  }
+
+  Future<Order> submitOrder(OrderDto orderDto) async {
+    final currentAsyncProcess = read(currentAsyncProcessProvider).state;
+    final repository = read(orderRepository);
+    final auth = read(googleAuthenticationProvider).state;
+    var token = '';
+    if (auth != null) {
+      token = auth.idToken;
+    }
+    String result;
+    if (currentAsyncProcess) {
+      result = await repository.createOrder(true, token, orderDto);
+    } else {
+      result = await repository.processOrder(token, orderDto);
+    }
+    if (!isValidJson(result)) {
+      throw Error();
+    }
+    final orderJson = json.decode(result) as Map<String, dynamic>;
+    if (!_isValidOrderJson(orderJson)) {
+      throw Error();
+    }
+    return Order.fromJson(orderJson);
+  }
+
+  Future<Order> getOrder(OrderDto orderDto) async {
+    final repository = read(orderRepository);
+    final auth = read(googleAuthenticationProvider).state;
+    var token = '';
+    if (auth != null) {
+      token = auth.idToken;
+    }
+    String result;
+    result = await repository.getOrder(true, token, orderDto);
+    if (!isValidJson(result)) {
+      throw Error();
+    }
+    final orderJson = json.decode(result) as Map<String, dynamic>;
+    if (!_isValidOrderJson(orderJson)) {
+      throw Error();
+    }
+    return Order.fromJson(orderJson);
+  }
+
+  bool _isValidCustomerJson(Map<String, dynamic> customerJson) {
+    return customerJson.values.every((dynamic element) => element != null);
+  }
+
+  bool _isValidOrderJson(Map<String, dynamic> orderJson) {
+    return orderJson.values.every((dynamic element) => element != null);
+  }
+
+  void resetState() {
+    setCurrentAsyncProcess(false);
+    stopLoadingOnStepCustomer();
+    stopLoadingOnStepCart();
+    resetCurrentCustomer();
+    resetCurrentOrder();
+    resetCurrentQuantity();
   }
 }

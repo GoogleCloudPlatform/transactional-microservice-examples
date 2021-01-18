@@ -14,12 +14,35 @@
   limitations under the License.
 */
 
+import 'dart:convert';
+
 bool isNumeric(String s) {
   if (s == null) {
     return false;
   }
   try {
     double.parse(s);
+  } on FormatException catch (_) {
+    return false;
+  }
+  return true;
+}
+
+bool isInteger(String s) {
+  if (s == null) {
+    return false;
+  }
+  try {
+    int.parse(s);
+  } on FormatException catch (_) {
+    return false;
+  }
+  return true;
+}
+
+bool isValidJson(String s) {
+  try {
+    json.decode(s) as Map<String, dynamic>;
   } on FormatException catch (_) {
     return false;
   }
