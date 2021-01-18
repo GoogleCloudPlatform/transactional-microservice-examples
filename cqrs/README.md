@@ -36,7 +36,7 @@ The following diagram shows an example usecase of the CQRS pattern. It emulates 
 
 In this architecture, the Order service maintains the minimum amout of data, such as order id and product id, that is necessary to keep track of the order status. It doesn't record the product information maintained by the Product service. However, the customer may need borader information such as product names contained in the order. The Order information service maintains the database that contains the all information that a customer needs to know. In this example, it retrieves product information from the Product service and join it with the order information received from the Order service. The customer can query the information related to its orders against the Order information service.
 
->**Note**: In this example, the Order service desn't maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in [this example](../../main/README.md).
+>**Note**: In this example, the Order service desn't maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in the example [Using GCP services to execute transactional workflows in microservices architecture](../../main/README.md).
 
 The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyse the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
 
