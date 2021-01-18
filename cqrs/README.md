@@ -244,12 +244,12 @@ ORDERINFO_SERVICE_URL=$(gcloud run services list --platform managed \
     --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 ```
 
-Create a new product entry.
+Create new product entries.
 
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"product_id":"product00001", "product_name":"Gaming Display", "unit_price": 800}' \
+  -d '{"product_id":"product00001", "product_name":"Gaming Display", "unit_price": 500}' \
   -s $PRODUCT_SERVICE_URL/api/v1/product/create | jq .
 ```
 [Output]
@@ -264,74 +264,123 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 ```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
+  -d '{"product_id":"product00002", "product_name":"Web Camera", "unit_price": 100}' \
+  -s $PRODUCT_SERVICE_URL/api/v1/product/create | jq .
+```
+[Output]
+```json
+{
+  "product_id": "product00002",
+  "product_name": "Web Camera",
+  "unit_price": 100
+}
+```
+
+You can retrieve the product information from the Product service API.
+
+```shell
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
   -d '{"product_id":"product00001"}' \
   -s $PRODUCT_SERVICE_URL/api/v1/product/get | jq .
-
+```
+[Output]
+```json
 {
   "product_id": "product00001",
   "product_name": "Gaming Display",
   "unit_price": 800
 }
+```
 
+Submit a new order.
 
+```
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "product_id": "product00001", "number":3}' \
+  -d '{"customer_id":"customer01", "product_id": "product00001", "number":1}' \
   -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
-
+```
+[Output]
+```json
 {
   "customer_id": "customer01",
-  "number": 3,
+  "number": 2,
   "order_date": "2021-01-17",
   "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
   "product_id": "product00001"
 }
+```
 
+Set the assigned `order_id` in the environment variable.
+
+```shell
 ORDER_ID="551479ac-c665-43b7-aa35-f00b11c3219f"
+```
 
+Qeury the order information.
+
+```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
   -d "{\"customer_id\":\"customer01\", \"order_id\": \"$ORDER_ID\"}" \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/get | jq .
-  
+```
+[Output]
+```json  
 {
   "message": "The order does not exist."
 }
+```
 
+Because the communication between the Order service and the Order information service is asynchronous, the Order information service may not have the corresponsing information yet as in this result. In such a case, wait one minute, and retry.
+
+```
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
   -d "{\"customer_id\":\"customer01\", \"order_id\": \"$ORDER_ID\"}" \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/get | jq .
-
+```
+[Output]
+```json  
 {
   "customer_id": "customer01",
-  "number": 3,
+  "number": 2,
   "order_date": "2021-01-17",
   "order_id": "551479ac-c665-43b7-aa35-f00b11c3219f",
   "product_id": "product00001",
   "product_name": "Gaming Display",
-  "total_price": 2400,
+  "total_price": 1600,
   "unit_price": 800
 }
+```
 
+Now you can receive the order information including the product information.
 
-====
+Submit some more orders. In this example, you specify the order date explicitly. 
 
+```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "product_id": "product00001", "number":5}' \
+  -d '{"customer_id":"customer01", "product_id": "product00002", "number":1, "order_date": "2021-02-14"}' \
   -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
 
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"customer01", "product_id": "product00001", "number":3, "order_date": "2020-12-31"}' \
+  -d '{"customer_id":"customer01", "product_id": "product00002", "number":1, "order_date": "2020-12-31"}' \
   -s $ORDER_SERVICE_URL/api/v1/order/create | jq .
+```
 
+Query the order information for a specific month, Jan 2021.
+
+```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
   -d '{"customer_id":"customer01", "order_date": "2021-01"}' \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
-
+```
+[Output]
+```json
 {
   "order_date": "2021-01",
   "orders": [
@@ -357,13 +406,18 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
     }
   ]
 }
+```
 
+Query the order information for a specific year, 2020.
 
+```shell
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
   -H "Content-Type: application/json" \
   -d '{"customer_id":"customer01", "order_date": "2020"}' \
   -s $ORDERINFO_SERVICE_URL/api/v1/orderinfo/list | jq .
-
+```
+[Output]
+```json
 {
   "order_date": "2020-12",
   "orders": [
@@ -379,10 +433,16 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
     }
   ]
 }
+```
 
+Execute SQL against BigQuery to retrieve sales result for each product.
+
+```
 bq query "select product_name, sum(number) as total_number, sum(total_price) as revenue \
   from cqrs_example.order_information group by product_name"
-  
+```
+[Output]
+```
 +----------------+--------------+---------+
 |  product_name  | total_number | revenue |
 +----------------+--------------+---------+
