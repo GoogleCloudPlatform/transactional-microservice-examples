@@ -21,7 +21,7 @@ Disclaimer: This is not an official Google product.
 
 ## Introduction
 
-In the microservices architecture, each service maintains its own database instead of sharing a central database. It's necessary to avoid a tight coupling of microservices. However, it sometimes makes difficult to join data across multiple microservices. You may use a data aggregation service that collects and joins data from multiple services based on a query requests from clients. The Command and Query Responsibility Segregation (CQRS) pattern is another way to deal with the data aggregation problem. You deploy a query service that is responsible for maintaining a readonly database containing the pre-joined (denormalized) data. It receives events containing data update from other services and update its own database, if necessary, by joining them with other data from various data sources. When it receives a query request from a client, it sends back the pre-joined data from its database.
+In the microservices architecture, each service maintains its own database instead of sharing a central database. It's necessary to avoid a tight coupling of microservices. However, it sometimes makes difficult to join data across multiple microservices. You may use a data aggregation service that collects and joins data from multiple services based on a query requests from clients. The Command and Query Responsibility Segregation (CQRS) pattern is another way to deal with the data aggregation problem. You deploy a query service that is responsible for maintaining a readonly database containing the pre-joined (denormalized) data. It receives events containing data updates from other services and updates its own database, if necessary, by joining them with other data from various data sources. When it receives a query request from a client, it sends back the pre-joined data from its database.
 
 The following diagram shows an example usecase of the CQRS pattern. It emulates a part of the order process of an online shopping system.
 
@@ -31,12 +31,12 @@ The following diagram shows an example usecase of the CQRS pattern. It emulates 
 2. The Order service assigns an unique order ID and publishes an event.
 3. The Order information service receives the event, retrieves product information from the Product service, and stores the aggregated information.
 4. The Order information service stores the same information in the data warehouse (BigQuery) with the streaming insert.
-5. The customer retrieves the order information from the Order information service with specifying an order ID. The customer can also retrieve information of multiple orders with specifying the range of order date such as in 2021, or in 2021/01.
+5. The customer retrieves the order information from the Order information service with specifying an order ID. The customer can also retrieve information of multiple orders with specifying the range of order dates such as in 2021, or in 2021/01.
 6. A shop owner can analyse the order data with the data warehouse.
 
-In this architecture, the Order service maintains the minimum amout of data, such as order id and product id, that is necessary to keep track of the order status. It doesn't record the product information maintained by the Product service. However, the customer may need borader information such as product names contained in the order. The Order information service maintains the database that contains the all information that a customer needs to know. In this example, it retrieves product information from the Product service and join it with the order information received from the Order service. The customer can query the information related to its orders against the Order information service.
+In this architecture, the Order service maintains the minimum amount of data, such as order id and product id, that is necessary to keep track of the order status. It doesn't record the product information maintained by the Product service. However, the customer may need broader information such as product names contained in the order. The Order information service maintains the database that contains all the information that a customer needs to know. In this example, it retrieves product information from the Product service and join it with the order information received from the Order service. The customer can query the information related to its orders against the Order information service.
 
->**Note**: In this example, the Order service desn't maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in the example [Using GCP services to execute transactional workflows in microservices architecture](../../main/README.md).
+>**Note**: In this example, the Order service does not maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in the example [Using GCP services to execute transactional workflows in microservices architecture](../../main/README.md).
 
 The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyse the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
 
@@ -206,7 +206,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --role=roles/iam.serviceAccountTokenCreator
 ```
 
-You create a push-subscription that delivers messages in the `order-service-cqrs-event` topic to the Order Information service. You let Pub/Sub use the service account, that you created before, to invoke the Customer service with `run.invoker` role.
+You create a push-subscription that delivers messages in the `order-service-cqrs-event` topic to the Order Information service. You let Pub/Sub use the service account that you created before to invoke the Customer service with the `run.invoker` role.
 
 ```shell
 SERVICE_NAME="orderinfo-service-cqrs"
@@ -335,7 +335,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Because the communication between the Order service and the Order information service is asynchronous, the Order information service may not have the corresponsing information yet as in this result. In such a case, wait one minute, and retry. Then you receive the order information including the product information as below.
+Because the communication between the Order service and the Order information service is asynchronous, the Order information service may not have the corresponding information yet as in this result. In such a case, wait one minute, and retry. Then you receive the order information including the product information as below.
 
 ```
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
@@ -435,7 +435,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 }
 ```
 
-Execute SQL against BigQuery to retrieve sales result for each product.
+Execute SQL against BigQuery to retrieve sales results for each product.
 
 ```
 bq query "select product_name, sum(number) as total_number, sum(total_price) as revenue \
@@ -450,4 +450,3 @@ bq query "select product_name, sum(number) as total_number, sum(total_price) as 
 | Web Camera     |            2 |     200 |
 +----------------+--------------+---------+
 ```
-
