@@ -40,6 +40,8 @@ In this architecture, the Order service maintains the minimum amount of data, su
 
 The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyse the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
 
+>**Note**: For details of the asynchronous communication using PubSub events, read [Notes on the event publishing process](../../main/README.md#notes-on-the-event-publishing-process).
+
 ## Build the example application
 
 ### Prerequisites
