@@ -95,7 +95,7 @@ git clone https://github.com/GoogleCloudPlatform/transactional-microservice-exam
 [10]: https://cloud.google.com/cloud-shell/docs/
 [11]: https://console.cloud.google.com/
 
-## Deploy server-side components for the "Choreography-based saga" architecture
+## Deploy server-side components
 
 ### Build container images and deploy them on Cloud Run
 
