@@ -214,7 +214,7 @@ gcloud run services add-iam-policy-binding $SERVICE_NAME \
     --platform=managed --region=us-central1
 
 SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:$SERVICE_NAME")
+    --format="table[no-heading](URL)" --filter="metadata.name:$SERVICE_NAME")
 SERVICE_URL="${SERVICE_URL}/api/v1/event/publish"
 gcloud scheduler jobs create http event-publisher-scheduler \
        --schedule='* * * * *' \
@@ -249,7 +249,7 @@ You create a push-subscription that delivers messages in the `order-service-even
 ```shell
 SERVICE_NAME="customer-service-async"
 SERVICE_URL=$(gcloud run services list --platform managed \
-  --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+  --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 SERVICE_URL="${SERVICE_URL}/api/v1/customer/pubsub"
 
 gcloud run services add-iam-policy-binding $SERVICE_NAME \
@@ -268,7 +268,7 @@ You create a push-subscription that delivers messages in the `customer-service-e
 ```shell
 SERVICE_NAME="order-service-async"
 SERVICE_URL=$(gcloud run services list --platform managed \
-  --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+  --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 SERVICE_URL="${SERVICE_URL}/api/v1/order/pubsub"
 
 gcloud run services add-iam-policy-binding $SERVICE_NAME \
@@ -345,11 +345,11 @@ You deploy a workflow to process a customer's order.
 ```shell
 SERVICE_NAME="customer-service-sync"
 CUSTOMER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 
 SERVICE_NAME="order-service-sync"
 ORDER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
     
 cd $HOME/transactional-microservice-examples/services/order-processor
 cp order_workflow.yaml.template order_workflow.yaml
@@ -372,11 +372,11 @@ Set environment variables to point URLs of API endpoints of microservices.
 ```shell
 SERVICE_NAME="customer-service-async"
 CUSTOMER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 
 SERVICE_NAME="order-service-async"
 ORDER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 ```
 
 Create a new customer entry.
@@ -569,15 +569,15 @@ Set environment variables to point URLs of API endpoints of microservices.
 ```shell
 SERVICE_NAME="customer-service-sync"
 CUSTOMER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 
 SERVICE_NAME="order-service-sync"
 ORDER_SERVICE_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 
 SERVICE_NAME="order-processor-service"
 ORDER_PROCESSOR_URL=$(gcloud run services list --platform managed \
-    --format="table[no-heading](URL)" --filter="SERVICE:${SERVICE_NAME}")
+    --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 ```
 
 Create a new customer entry.
