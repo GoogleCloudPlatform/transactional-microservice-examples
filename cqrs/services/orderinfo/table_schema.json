@@ -1,0 +1,34 @@
+[
+  {
+    "name": "customer_id",
+    "type": "STRING"
+  },
+  {
+    "name": "order_id",
+    "type": "STRING"
+  },
+  {
+    "name": "product_id",
+    "type": "STRING"
+  },
+  {
+    "name": "product_name",
+    "type": "STRING"
+  },
+  {
+    "name": "number",
+    "type": "INT64"
+  },
+  {
+    "name": "unit_price",
+    "type": "INT64"
+  },
+  {
+    "name": "total_price",
+    "type": "INT64"
+  },
+  {
+    "name": "order_date",
+    "type": "DATE"
+  }
+]
