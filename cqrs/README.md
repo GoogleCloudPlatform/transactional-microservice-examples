@@ -32,13 +32,13 @@ The following diagram shows an example usecase of the CQRS pattern. It emulates 
 3. The Order information service receives the event, retrieves product information from the Product service, and stores the aggregated information.
 4. The Order information service stores the same information in the data warehouse (BigQuery) with the streaming insert.
 5. The customer retrieves the order information from the Order information service with specifying an order ID. The customer can also retrieve information of multiple orders with specifying the range of order dates such as in 2021, or in 2021/01.
-6. A shop owner can analyse the order data with the data warehouse.
+6. A shop owner can analyze the order data with the data warehouse.
 
 In this architecture, the Order service maintains the minimum amount of data, such as order id and product id, that is necessary to keep track of the order status. It doesn't record the product information maintained by the Product service. However, the customer may need broader information such as product names contained in the order. The Order information service maintains the database that contains all the information that a customer needs to know. In this example, it retrieves product information from the Product service and join it with the order information received from the Order service. The customer can query the information related to its orders against the Order information service.
 
 >**Note**: In this example, the Order service does not maintain the order status. However, in a real usecase, it may participate in the transactional workflow to maintain the order status as in the example [Using GCP services to execute transactional workflows in microservices architecture](../../main/README.md).
 
-The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyse the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
+The Order information service also sends the aggregated information to the data warehouse. The shop owner can analyze the stored data using queries in SQL. While the APIs of the Order information service accept only the predefined queries, the data warehouse can be used for ad-hoc data analysis and the backend database of other BI tools.
 
 >**Note**: For details of the asynchronous communication using PubSub events, read [Notes on the event publishing process](../../main/README.md#notes-on-the-event-publishing-process).
 
