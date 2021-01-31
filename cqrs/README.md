@@ -115,7 +115,7 @@ gcloud run deploy product-service-cqrs \
   --no-allow-unauthenticated
 
 SERVICE_NAME="product-service-cqrs"
-SERVICE_URL=$(gcloud run services list --platform managed \
+PRODUCT_SERVICE_URL=$(gcloud run services list --platform managed \
     --format="table[no-heading](URL)" --filter="metadata.name:${SERVICE_NAME}")
 
 cd $HOME/transactional-microservice-examples/cqrs/services/orderinfo
