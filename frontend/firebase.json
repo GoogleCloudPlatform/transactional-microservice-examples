@@ -1,0 +1,47 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/order-service-sync/**",
+        "run": {
+          "serviceId": "order-service-sync",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/order-service-async/**",
+        "run": {
+          "serviceId": "order-service-async",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/customer-service-sync/**",
+        "run": {
+          "serviceId": "customer-service-sync",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/customer-service-async/**",
+        "run": {
+          "serviceId": "customer-service-async",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/order-processor-service/**",
+        "run": {
+          "serviceId": "order-processor-service",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
