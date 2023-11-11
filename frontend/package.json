@@ -15,7 +15,7 @@
     "lint:style:fix": "stylelint --fix 'src/**/*.{css,less,sass,scss}'"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.4.0",
